@@ -118,7 +118,7 @@ nbconvert=5.5.0=py_0
 nbformat=4.4.0=py37_0
 ncurses=6.1=h0a44026_1
 networkx=2.3=py_0
-nltk~=3.4.4=py37_0
+nltk=3.4.4=py37_0
 notebook=6.0.0=py37_0
 numba=0.45.1=py37h6440ff4_0
 numpy=1.16.4=py37hacdab7b_0

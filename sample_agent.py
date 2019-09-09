@@ -16,7 +16,7 @@ run_num = 1
 
 
 class Agent(object):
-    def __init__(self, dim_action)
+    def __init__(self, dim_action):
         self.dim_action = dim_action
         self.training = True
         self.init_model()

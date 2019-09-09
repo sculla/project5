@@ -1,55 +1,66 @@
+from gym_torcs import TorcsEnv
+import pickle
 import numpy as np
+import random
 import matplotlib.pyplot as plt
 from keras.models import Sequential
-from keras.layers import Dense, Flatten, Convolution2D, MaxPool2D
+from keras.layers import Dense, Flatten, Convolution2D, MaxPool2D, Reshape
+from keras.optimizers import Adam
+from rl.agents.dqn import DQNAgent
+from rl.policy import BoltzmannQPolicy
+from rl.memory import SequentialMemory
+
+random.seed(42)
+
+run_num = 1
+
 
 class Agent(object):
-    def __init__(self, dim_action):
+    def __init__(self, dim_action)
         self.dim_action = dim_action
-    def model(self):
-        model = Sequential()
-        model.add(Convolution2D(160, (3, 3), activation='relu', input_shape=(320, 240, 3)))
-        model.add(MaxPool2D())
-        model.add(Convolution2D(64, (3, 3), activation='relu'))
-        model.add(MaxPool2D())
-        model.add(Convolution2D(32, (3, 3), activation='relu'))
-        model.add(MaxPool2D())
-        model.add(Convolution2D(16, (3, 3), activation='relu'))
-        model.add(MaxPool2D())
-        model.add(Flatten())
-        model.add(Dense(256, activation='relu'))
-        model.add(Dense(2, activation='tanh'))
-        model.compile(loss='mean_squared_error', optimizer='adam')
+        self.training = True
+        self.init_model()
 
-        self.model = model
+    def init_model(self):
+        self.model = Sequential()
+        self.model.add(Reshape((64, 64, 3), input_shape=(4096, 3)))
+        self.model.add(Convolution2D(64, (3, 3), activation='relu'))
+        self.model.add(MaxPool2D())
+        self.model.add(Convolution2D(32, (3, 3), activation='relu'))
+        self.model.add(MaxPool2D())
+        self.model.add(Convolution2D(16, (3, 3), activation='relu'))
+        self.model.add(MaxPool2D())
+        self.model.add(Flatten())
+        self.model.add(Dense(256, activation='relu'))
+        self.model.add(Dense(self.dim_action, activation='tanh'))
+        self.model.compile(loss='mean_squared_error', optimizer='adam')
+
+    def save_weights(self):
+        self.model.save_weights(f'output/weights/torcs/best_run.h5f')
+
+    def load_weights(self):
+        self.model.load_weights(f'output/weights/torcs/best_run.h5f')
 
 
-    def act(self, ob, reward, done, vision_on):
-        #print("ACT!")
+vision = True
+episode_count = 10
+max_steps = 100
+reward = 0
+done = False
+step = 0
 
-        # Get an Observation from the environment.
-        # Each observation vectors are numpy array.
-        # focus, opponents, track sensors are scaled into [0, 1]. When the agent
-        # is out of the road, sensor variables return -1/200.
-        # rpm, wheelSpinVel are raw values and then needed to be preprocessed.
-        # vision is given as a tensor with size of (64*64, 3) = (4096, 3) <-- rgb
-        # and values are in [0, 255]
-        if vision_on is False:
-            focus, speedX, speedY, speedZ, opponents, rpm, track, wheelSpinVel = ob
-        else:
-            focus, speedX, speedY, speedZ, opponents, rpm, track, wheelSpinVel, vision = ob
+# Generate a Torcs environment
+env = TorcsEnv(vision=vision, throttle=False)
 
-            """ The code below is for checking the vision input. This is very heavy for real-time Control
-                So you may need to remove.
-            """
-            print(vision.shape)
-            """
-            img = np.ndarray((64,64,3))
-            for i in range(3):
-                img[:, :, i] = 255 - vision[:, i].reshape((64, 64))
+agent = Agent(dim_action=1)
 
-            plt.imshow(img, origin='lower')
-            plt.draw()
-            plt.pause(0.001)
-            """
-        return np.tanh(np.random.randn(self.dim_action)) # random action
+memory = SequentialMemory(limit=50000, window_length=1)
+policy = BoltzmannQPolicy()
+# enable the dueling network
+# you can specify the dueling_type to one of {'avg','max','naive'}
+
+dqn = DQNAgent(model=agent.model, nb_actions=agent.dim_action, memory=memory, nb_steps_warmup=50,
+               enable_dueling_network=True, dueling_type='avg', target_model_update=1e-2, policy=policy)
+dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+
+dqn.fit(env,nb_steps=5,verbose=2,visualize=True)

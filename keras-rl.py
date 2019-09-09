@@ -1,11 +1,11 @@
 import numpy as np
 import gym
 # import tensorflow as tf
-import mujoco_py
+
 
 from keras import backend as K
 from keras.models import Sequential
-from keras.layers import Dense, Input, Activation, Flatten, Convolution1D, MaxPool1D, Convolution2D, MaxPool2D
+from keras.layers import Dense, Flatten, Convolution2D, MaxPool2D
 from keras.optimizers import Adam
 from keras.layers import Permute, Reshape
 from keras.backend import permute_dimensions, reshape
@@ -14,6 +14,27 @@ from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
 
+def car_model_2d():
+    nb_actions = env.action_space.shape[0]
+
+    WINDOW_LENGTH = 2
+    INPUT_SHAPE = env.observation_space.shape
+
+    model = Sequential()
+    model.add(Convolution2D(160, (3, 3), activation='relu', input_shape=(320, 240, 3)))
+    model.add(MaxPool2D())
+    model.add(Convolution2D(64, (3, 3), activation='relu'))
+    model.add(MaxPool2D())
+    model.add(Convolution2D(32, (3, 3), activation='relu'))
+    model.add(MaxPool2D())
+    model.add(Convolution2D(16, (3, 3), activation='relu'))
+    model.add(MaxPool2D())
+    model.add(Flatten())
+    model.add(Dense(256, activation='relu'))
+    model.add(Dense(2, activation='tanh'))
+
+    print(model.summary())
+    return model
 
 
 #
@@ -31,24 +52,22 @@ state_shape = env.observation_space.shape
 np.random.seed(123)
 env.seed(123)
 print(env.action_space)
+
 nb_actions = env.action_space.shape[0]
 
-# Next, we build a very simple model regardless of the dueling architecture
-# if you enable dueling network in DQN , DQN will build a dueling network base on your model automatically
-# Also, you can build a dueling network by yourself and turn off the dueling network in DQN.
-WINDOW_LENGTH = 2
+WINDOW_LENGTH = 1
 INPUT_SHAPE = env.observation_space.shape
 input_shape = (WINDOW_LENGTH,) + INPUT_SHAPE
 model = Sequential()
 # width, height, channels, window
-model.add(Permute((2,3,4,1), input_shape=input_shape))
-#time steps into one 2d convo
-model.add(Reshape((96,96,(3*WINDOW_LENGTH))))
-model.add(Convolution2D(16, (3,3), activation='relu'))
+# model.add(Permute((2, 3, 4, 1), input_shape=input_shape))
+# # time steps into one 2d convo
+model.add(Reshape((96, 96, (3 * WINDOW_LENGTH)),input_shape=input_shape))
+model.add(Convolution2D(16, (3, 3), activation='relu'))
 model.add(MaxPool2D())
-model.add(Convolution2D(32, (3,3), activation='relu'))
+model.add(Convolution2D(32, (3, 3), activation='relu'))
 model.add(MaxPool2D())
-model.add(Convolution2D(32, (3,3), activation='relu'))
+model.add(Convolution2D(32, (3, 3), activation='relu'))
 model.add(MaxPool2D())
 model.add(Flatten())
 model.add(Dense(256, activation='relu'))
@@ -58,16 +77,16 @@ print(model.summary())
 
 # Finally, we configure and compile our agent. You can use every built-in Keras optimizer and
 # even the metrics!
-memory = SequentialMemory(limit=50000, window_length=2)
+memory = SequentialMemory(limit=50000, window_length=WINDOW_LENGTH)
 policy = BoltzmannQPolicy()
 # enable the dueling network
 # you can specify the dueling_type to one of {'avg','max','naive'}
 
-dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory,
-               enable_dueling_network=True, dueling_type='naive', target_model_update=1e-2, policy=policy)
+dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=50,
+               enable_dueling_network=True, dueling_type='avg', target_model_update=1e-2, policy=policy)
 dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
-dqn.fit(env,nb_steps=50000,verbose=2,visualize=False)
+dqn.fit(env,nb_steps=1,verbose=2,visualize=False)
 
 # Okay, now it's time to learn something! We visualize the training here for show, but this
 # slows down training quite a lot. You can always safely abort the training prematurely using

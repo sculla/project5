@@ -37,7 +37,7 @@ class TorcsProcessor(MultiInputProcessor):
         img_input = np.array(img)
         assert img_input.shape == INPUT_SHAPE
         print(img_input.shape, speedX.shape, speedY.shape, speedZ.shape)
-        return img_input, speedX, speedY, speedZ
+        return img_input, np.array([speedX]), np.array([speedY]), np.array([speedZ])
 
 
 class Agent(object):

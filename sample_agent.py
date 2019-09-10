@@ -20,7 +20,7 @@ WINDOW_LENGTH = 2
 run_num = 1
 vision = True
 
-class TorcsProcessor(Processor):
+class TorcsProcessor(MultiInputProcessor):
 
     def __init__(self, nb_inputs):
         self.nb_inputs = nb_inputs
@@ -41,19 +41,6 @@ class TorcsProcessor(Processor):
         print(vec_input.shape)
         # assert vec_input.shape == (3,)
         return (img_input / 255), vec_input
-
-    def process_state_batch(self, state_batch):
-        # Image is always in the 0 location
-        input_batches = [[] for x in range(self.nb_inputs)]
-        for state in state_batch:
-            processed_state = [[] for x in range(self.nb_inputs)]
-            for observation in state:
-                assert len(observation) == self.nb_inputs
-                for o, s in zip(observation, processed_state):
-                    s.append(o)
-            for idx, s in enumerate(processed_state):
-                input_batches[idx].append(s)
-        return [np.array(x) for x in input_batches]
 
 class Agent(object):
     def __init__(self, dim_action):

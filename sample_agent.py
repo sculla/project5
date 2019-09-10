@@ -16,7 +16,7 @@ from keras.utils import plot_model
 import os
 
 random.seed(42)
-INPUT_SHAPE = (64,64,1)
+INPUT_SHAPE = (64,64)
 WINDOW_LENGTH = 5
 run_num = 1
 vision = True

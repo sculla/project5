@@ -16,7 +16,7 @@ from keras.utils import plot_model
 import os
 
 random.seed(42)
-INPUT_SHAPE = (64,64,3)
+INPUT_SHAPE = (64,64)
 WINDOW_LENGTH = 5
 run_num = 1
 vision = True
@@ -34,9 +34,9 @@ class TorcsProcessor(Processor):
 
         #image processing
         assert vision.shape == (4096,3)
-        img_input = vision.reshape((64,64,3))
-        # img = Image.fromarray(vision)
-        # img = img.resize(INPUT_SHAPE).convert('L') #grayscale
+        img = Image.fromarray(vision)
+        img = img.resize(INPUT_SHAPE).convert('L') #grayscale
+        img_input = np.array(img)
         assert img_input.shape == INPUT_SHAPE
         assert vec_input.shape == (3,)
         return img_input, vec_input
@@ -72,7 +72,7 @@ class Agent(object):
         if os.path.exists('output/weights/torcs/best_run.h5f'):
             try:
                 self.model.load_weights('output/weights/torcs/best_run.h5f')
-            else:
+            except:
                 pass
 
 # Generate a Torcs environment

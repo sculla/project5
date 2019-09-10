@@ -38,7 +38,8 @@ class TorcsProcessor(Processor):
         img = img.resize(INPUT_SHAPE).convert('L') #grayscale
         img_input = np.array(img)
         assert img_input.shape == INPUT_SHAPE
-        assert vec_input.shape = (3,)
+        print(vec_input.shape)
+        # assert vec_input.shape == (3,)
         return img_input.astype('uint8'), vec_input
 
     def process_state_batch(self, state_batch):
@@ -49,7 +50,8 @@ class TorcsProcessor(Processor):
             for observation in state:
                 assert len(observation) == self.nb_inputs
                 for o, s in zip(observation, processed_state):
-                    o[0] = o[0].astype('float32') / 255
+                    print(o)
+                    # o[0] = o[0].astype('float32') / 255
                     s.append(o)
             for idx, s in enumerate(processed_state):
                 input_batches[idx].append(s)

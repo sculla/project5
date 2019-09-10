@@ -38,9 +38,9 @@ class TorcsProcessor(MultiInputProcessor):
         img = img.resize(INPUT_SHAPE).convert('L') #grayscale
         img_input = np.array(img)
         assert img_input.shape == INPUT_SHAPE
-        print(vec_input.shape)
+        print(vec_input)
         # assert vec_input.shape == (3,)
-        return (img_input / 255), vec_input
+        return (img_input / 255), speedY
 
 class Agent(object):
     def __init__(self, dim_action):
@@ -51,7 +51,7 @@ class Agent(object):
     def init_model(self):
 
         img_input = Input(((WINDOW_LENGTH,) + INPUT_SHAPE))
-        vec_input = Input((WINDOW_LENGTH,3,))
+        vec_input = Input((WINDOW_LENGTH,1,))
         x1 = Permute((3,2,1))(img_input)
         x1 = Convolution2D(64, (3, 3), activation='relu')(x1)
         x1 = MaxPool2D()(x1)

@@ -88,7 +88,7 @@ class Agent(object):
 
 
 # Generate a Torcs environment
-env = TorcsEnv(vision=vision, throttle=False)
+env = TorcsEnv(vision=True, throttle=False)
 
 agent = Agent(dim_action=1)
 

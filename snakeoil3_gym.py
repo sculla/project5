@@ -303,7 +303,7 @@ class ServerState():
 
     def __repr__(self):
         # Comment the next line for raw output:
-        return self.fancyout()
+        # return self.fancyout()
         # -------------------------------------
         out= str()
         for k in sorted(self.d):

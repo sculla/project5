@@ -51,7 +51,7 @@ class Agent(object):
     def init_model(self):
 
         img_input = Input(((WINDOW_LENGTH,) + INPUT_SHAPE))
-        vec_input = Input((WINDOW_LENGTH,) + (3,))
+        vec_input = Input(((WINDOW_LENGTH,) + (3,)))
         x1 = Permute((3,2,1))(img_input)
         x1 = Convolution2D(64, (3, 3), activation='relu')(x1)
         x1 = MaxPool2D()(x1)
@@ -60,7 +60,8 @@ class Agent(object):
         x1 = Convolution2D(16, (3, 3), activation='relu')(x1)
         x1 = MaxPool2D()(x1)
         x1 = Flatten()(x1)
-        x12 = Concatenate(axis=-1)([x1,vec_input])
+        x2 = Flatten()(img_input)
+        x12 = Concatenate(axis=-1)([x1,x2])
         x12 = Dense(256, activation='relu')(x12)
         output = Dense(self.dim_action, activation='tanh')(x12)
         self.model = Model(inputs=[img_input,vec_input],outputs=[output])

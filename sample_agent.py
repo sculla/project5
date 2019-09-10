@@ -38,6 +38,7 @@ class TorcsProcessor(Processor):
         img = img.resize(INPUT_SHAPE).convert('L') #grayscale
         img_input = np.array(img)
         assert img_input.shape == INPUT_SHAPE
+        assert vec_input.shape = (3,)
         return img_input.astype('uint8'), vec_input
 
     def process_state_batch(self, state_batch):
@@ -72,8 +73,7 @@ class Agent(object):
         x1 = Convolution2D(16, (3, 3), activation='relu')(x1)
         x1 = MaxPool2D()(x1)
         x1 = Flatten()(x1)
-        x2 = Flatten()(vec_input)
-        x12 = Concatenate(axis=-1)([x1,x2])
+        x12 = Concatenate(axis=-1)([x1,vec_input])
         x12 = Dense(256, activation='relu')(x12)
         output = Dense(self.dim_action, activation='tanh')(x12)
         self.model = Model(inputs=[img_input,vec_input],outputs=[output])

@@ -69,6 +69,7 @@ class Agent(object):
         output = Dense(self.dim_action, activation='tanh')(x12)
         self.model = Model(inputs=[img_input,vec_input],outputs=[output])
         plot_model(self.model, to_file='model.png')
+        print(self.model.summary())
 
     def save_weights(self):
         self.model.save_weights(f'output/weights/torcs/best_run.h5f')

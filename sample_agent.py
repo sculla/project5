@@ -51,7 +51,7 @@ class Agent(object):
     def init_model(self):
 
         img_input = Input(((WINDOW_LENGTH,) + INPUT_SHAPE))
-        vec_input = Input(((WINDOW_LENGTH,) + (3,)))
+        vec_input = Input(((WINDOW_LENGTH,) + (3)))
         x1 = Permute((3,2,1))(img_input)
         x1 = Convolution2D(64, (3, 3), activation='relu')(x1)
         x1 = MaxPool2D()(x1)

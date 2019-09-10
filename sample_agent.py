@@ -20,7 +20,7 @@ WINDOW_LENGTH = 2
 run_num = 1
 vision = True
 
-class TorcsProcessor(MultiInputProcessor):
+class TorcsProcessor(Processor):
 
     def __init__(self, nb_inputs):
         self.nb_inputs = nb_inputs

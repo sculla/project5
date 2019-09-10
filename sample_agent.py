@@ -29,7 +29,7 @@ class TorcsProcessor(Processor):
 
         focus, speedX, speedY, speedZ, opponents, rpm, track, wheelSpinVel, vision = observation
 
-        vec_input = np.array([speedX, speedY, speedZ])
+        vec_input = np.array([[speedX, speedY, speedZ]])
 
         #image processing
         assert vision.shape == (4096,3)
@@ -72,7 +72,7 @@ class Agent(object):
         x1 = Convolution2D(16, (3, 3), activation='relu')(x1)
         x1 = MaxPool2D()(x1)
         x1 = Flatten()(x1)
-        x12 = Concatenate()([x1,vec_input])
+        x12 = Concatenate(axis=-1)([x1,vec_input])
         x12 = Dense(256, activation='relu')(x12)
         output = Dense(self.dim_action, activation='tanh')(x12)
         self.model = Model(inputs=[img_input,vec_input],outputs=[output])

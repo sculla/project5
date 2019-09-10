@@ -36,11 +36,12 @@ class TorcsProcessor(MultiInputProcessor):
         img = Image.fromarray(vision)
         img = img.resize(INPUT_SHAPE).convert('L')  # grayscale
         #        img.tobitmap('thing.bmp')
+        img.save('wtf.png')
         img_input = np.array(img)
         assert img_input.shape == INPUT_SHAPE
         for x in img_input:
             print(x)
-        time.sleep(200)
+        time.sleep(20)
         return img_input, np.array([speedX]), np.array([speedY]), np.array([speedZ])
 
 

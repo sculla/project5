@@ -36,6 +36,7 @@ class TorcsProcessor(MultiInputProcessor):
         #        img.tobitmap('thing.bmp')
         img_input = np.array(img)
         assert img_input.shape == INPUT_SHAPE
+        print(img_input.shape, speedX.shape, speedY.shape, speedZ.shape)
         return img_input, speedX, speedY, speedZ
 
 

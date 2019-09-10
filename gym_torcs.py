@@ -214,6 +214,7 @@ class TorcsEnv:
 
     def agent_to_torcs(self, u):
         torcs_action = {'steer': u} # steer only
+        print(torcs_action)
         # torcs_action = {'steer': u[0]}
 
         if self.throttle is True:  # throttle action is enabled

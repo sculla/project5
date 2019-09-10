@@ -12,8 +12,8 @@ import time
 
 class TorcsEnv:
     terminal_judge_start = 500  # Speed limit is applied after this step
-    termination_limit_progress = 5  # [km/h], episode terminates if car is running slower than this limit
-    default_speed = 10
+    termination_limit_progress = 2  # [km/h], episode terminates if car is running slower than this limit
+    default_speed = 5
 
     initial_reset = True
 

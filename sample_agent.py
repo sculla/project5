@@ -17,7 +17,7 @@ import os
 
 random.seed(42)
 INPUT_SHAPE = (64,64)
-WINDOW_LENGTH = 5
+WINDOW_LENGTH = 2
 run_num = 1
 vision = True
 
@@ -36,7 +36,6 @@ class TorcsProcessor(MultiInputProcessor):
         #        img.tobitmap('thing.bmp')
         img_input = np.array(img)
         assert img_input.shape == INPUT_SHAPE
-        print(img_input.shape, speedX.shape, speedY.shape, speedZ.shape)
         return img_input, np.array([speedX]), np.array([speedY]), np.array([speedZ])
 
 

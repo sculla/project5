@@ -10,16 +10,17 @@ from rl.core import Processor
 from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
+from rl.processors import MultiInputProcessor
 
 random.seed(42)
 
 run_num = 1
 
-class TorcsProcessor(Processor):
+class TorcsProcessor(MultiInputProcessor):
     def process_observation(self, observation):
         focus, speedX, speedY, speedZ, opponents, rpm, track, wheelSpinVel, vision = observation
 
-        vec_input = np.array(speedX, speedY, speedZ)
+        vec_input = np.array([speedX, speedY, speedZ])
         img_input = vision
 
 

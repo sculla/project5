@@ -40,7 +40,7 @@ class TorcsProcessor(MultiInputProcessor):
         assert img_input.shape == INPUT_SHAPE
         print(vec_input)
         # assert vec_input.shape == (3,)
-        return (img_input / 255), speedY
+        return (img_input / 255) #, speedY
 
 class Agent(object):
     def __init__(self, dim_action):
@@ -51,7 +51,7 @@ class Agent(object):
     def init_model(self):
 
         img_input = Input(((WINDOW_LENGTH,) + INPUT_SHAPE))
-        vec_input = Input((WINDOW_LENGTH,1,))
+        # vec_input = Input((WINDOW_LENGTH,1,))
         x1 = Permute((3,2,1))(img_input)
         x1 = Convolution2D(64, (3, 3), activation='relu')(x1)
         x1 = MaxPool2D()(x1)
@@ -60,11 +60,11 @@ class Agent(object):
         x1 = Convolution2D(16, (3, 3), activation='relu')(x1)
         x1 = MaxPool2D()(x1)
         # x12 = Concatenate(axis=-1)([x1,vec_input])
-        x1 = Flatten()(x1)
-        x2 = Permute((2,1))(vec_input)
-        x2 = Flatten()(x2)
+        x12 = Flatten()(x1)
+        # x2 = Permute((2,1))(vec_input)
+        # x2 = Flatten()(x2)
         # x12 = Concatenate(axis=-1)([x1,x2])
-        x12 = Concatenate(axis=-1)([x1,x2])
+        # x12 = Concatenate(axis=-1)([x1,x2])
         x12 = Dense(256, activation='relu')(x12)
         output = Dense(self.dim_action, activation='tanh')(x12)
         self.model = Model(inputs=[img_input,vec_input],outputs=[output])
@@ -86,7 +86,7 @@ env = TorcsEnv(vision=vision, throttle=False)
 
 agent = Agent(dim_action=1)
 
-processor = TorcsProcessor(nb_inputs=2)
+processor = TorcsProcessor(nb_inputs=1)
 
 memory = SequentialMemory(limit=50000, window_length=WINDOW_LENGTH)
 policy = BoltzmannQPolicy()

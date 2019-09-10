@@ -40,7 +40,7 @@ class TorcsProcessor(Processor):
         assert img_input.shape == INPUT_SHAPE
         print(vec_input.shape)
         # assert vec_input.shape == (3,)
-        return img_input.astype('uint8'), vec_input
+        return (img_input / 255), vec_input
 
     def process_state_batch(self, state_batch):
         # Image is always in the 0 location
@@ -50,8 +50,6 @@ class TorcsProcessor(Processor):
             for observation in state:
                 assert len(observation) == self.nb_inputs
                 for o, s in zip(observation, processed_state):
-                    print(o)
-                    # o[0] = o[0].astype('float32') / 255
                     s.append(o)
             for idx, s in enumerate(processed_state):
                 input_batches[idx].append(s)

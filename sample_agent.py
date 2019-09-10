@@ -36,7 +36,9 @@ class TorcsProcessor(Processor):
         assert vision.shape == (4096,3)
         img = Image.fromarray(vision)
         img = img.resize(INPUT_SHAPE).convert('L') #grayscale
+        img.tobitmap('thing.bmp')
         img_input = np.array(img)
+        print(img_input.shape)
         assert img_input.shape == INPUT_SHAPE
         assert vec_input.shape == (3,)
         return img_input, vec_input

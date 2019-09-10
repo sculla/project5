@@ -67,7 +67,8 @@ class Agent(object):
         # x12 = Concatenate(axis=-1)([x1,x2])
         x12 = Dense(256, activation='relu')(x12)
         output = Dense(self.dim_action, activation='tanh')(x12)
-        self.model = Model(inputs=[img_input,vec_input],outputs=[output])
+        # self.model = Model(inputs=[img_input,vec_input],outputs=[output])
+        self.model = Model(inputs=[img_input],outputs=[output])
         plot_model(self.model, to_file='model.png')
         print(self.model.summary())
 

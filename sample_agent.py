@@ -15,6 +15,8 @@ from PIL import Image
 from keras.utils import plot_model
 import os
 
+import time
+
 random.seed(42)
 INPUT_SHAPE = (64,64)
 WINDOW_LENGTH = 2
@@ -36,6 +38,9 @@ class TorcsProcessor(MultiInputProcessor):
         #        img.tobitmap('thing.bmp')
         img_input = np.array(img)
         assert img_input.shape == INPUT_SHAPE
+        for x in img_input:
+            print(x)
+        time.sleep(200)
         return img_input, np.array([speedX]), np.array([speedY]), np.array([speedZ])
 
 

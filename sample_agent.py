@@ -4,7 +4,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 from keras.models import Model
-from keras.layers import Dense, Flatten, Convolution2D, MaxPool2D, Reshape, Input, Concatenate
+from keras.layers import Dense, Flatten, Convolution2D, MaxPool2D, Reshape, Input, Concatenate, Permute
 from keras.optimizers import Adam
 from rl.core import Processor
 from rl.agents.dqn import DQNAgent
@@ -62,10 +62,10 @@ class Agent(object):
 
     def init_model(self):
 
-        img_input = Input((WINDOW_LENGTH,) + INPUT_SHAPE)
+        img_input = Input(((WINDOW_LENGTH,) + INPUT_SHAPE))
         vec_input = Input((3,))
-
-        x1 = Convolution2D(64, (3, 3), activation='relu')(img_input)
+        x1 = Permute((3,2,1))(img_input)
+        x1 = Convolution2D(64, (3, 3), activation='relu')(x1)
         x1 = MaxPool2D()(x1)
         x1 = Convolution2D(32, (3, 3), activation='relu')(x1)
         x1 = MaxPool2D()(x1)

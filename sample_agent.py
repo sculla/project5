@@ -96,5 +96,5 @@ dqn = DQNAgent(model=agent.model, processor=processor, nb_actions=agent.dim_acti
                enable_dueling_network=True, dueling_type='avg', target_model_update=1e-2, policy=policy)
 dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
-dqn.fit(env,nb_steps=5000,verbose=2,visualize=False, nb_max_episode_steps=100)
+dqn.fit(env,nb_steps=50000,verbose=1,visualize=False, nb_max_episode_steps=5000)
 dqn.model.save_weights('output/weights/torcs/best_run.h5f')
